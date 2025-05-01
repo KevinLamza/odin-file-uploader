@@ -1,0 +1,29 @@
+{
+	"name": "odin-file-uploader",
+	"version": "1.0.0",
+	"main": "index.js",
+	"type": "module",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/KevinLamza/odin-file-uploader.git"
+	},
+	"author": "Kevin Lamza",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/KevinLamza/odin-file-uploader/issues"
+	},
+	"homepage": "https://github.com/KevinLamza/odin-file-uploader#readme",
+	"description": "",
+	"dependencies": {
+		"dotenv": "^16.5.0",
+		"express": "^5.1.0"
+	},
+	"devDependencies": {
+		"@eslint/js": "^9.25.1",
+		"eslint": "^9.25.1",
+		"globals": "^16.0.0"
+	}
+}

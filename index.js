@@ -17,6 +17,8 @@ const __dirname = path.dirname(__filename); // get the name of the directory
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+const prisma = new PrismaClient();
+
 app.use(
 	session({
 		cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 },
@@ -33,7 +35,39 @@ app.use(
 app.use(passport.session());
 app.use(express.urlencoded({ extended: false }));
 
-const prisma = new PrismaClient();
+passport.use(
+	new LocalStrategy(async (username, password, done) => {
+		try {
+			const user = await prisma.users.findUnique({
+				where: { username: username },
+			});
+
+			if (!user) {
+				return done(null, false, { message: 'Incorrect username' });
+			}
+			if (user.password !== password) {
+				return done(null, false, { message: 'Incorrect password' });
+			}
+			return done(null, user);
+		} catch (err) {
+			return done(err);
+		}
+	})
+);
+
+passport.serializeUser((user, done) => {
+	done(null, user.id);
+});
+
+passport.deserializeUser(async (id, done) => {
+	try {
+		const user = await prisma.users.findUnique({ where: { id: id } });
+
+		done(null, user);
+	} catch (err) {
+		done(err);
+	}
+});
 
 async function main() {
 	const allUsers = await prisma.users.findMany();
@@ -57,8 +91,16 @@ main()
 	});
 
 app.get('/', (req, res) => {
-	res.render('index');
+	res.render('index', { user: req.user });
 });
+
+app.post(
+	'/log-in',
+	passport.authenticate('local', {
+		successRedirect: '/',
+		failureRedirect: '/',
+	})
+);
 
 app.listen(PORT, () => {
 	console.log(`Example app listening on port ${PORT}`);

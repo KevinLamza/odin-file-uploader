@@ -24,6 +24,12 @@ const prisma = new PrismaClient();
 
 async function main() {
 	const allUsers = await prisma.users.findMany();
+	// const allUsers = await prisma.users.create({
+	// 	data: {
+	// 		name: 'Michi',
+	// 		password: '789',
+	// 	},
+	// });
 	console.log(allUsers);
 }
 

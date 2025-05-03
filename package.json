@@ -1,38 +1,39 @@
 {
-	"name": "odin-file-uploader",
-	"version": "1.0.0",
-	"main": "index.js",
-	"type": "module",
-	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/KevinLamza/odin-file-uploader.git"
-	},
-	"author": "Kevin Lamza",
-	"license": "ISC",
-	"bugs": {
-		"url": "https://github.com/KevinLamza/odin-file-uploader/issues"
-	},
-	"homepage": "https://github.com/KevinLamza/odin-file-uploader#readme",
-	"description": "",
-	"dependencies": {
-		"@prisma/client": "^6.7.0",
-		"@quixo3/prisma-session-store": "^3.1.13",
-		"dotenv": "^16.5.0",
-		"ejs": "^3.1.10",
-		"express": "^5.1.0",
-		"express-session": "^1.18.1",
-		"passport": "^0.7.0",
-		"passport-local": "^1.0.0",
-		"pg": "^8.15.6"
-	},
-	"devDependencies": {
-		"@eslint/js": "^9.25.1",
-		"eslint": "^9.25.1",
-		"globals": "^16.0.0",
-		"prettier-plugin-prisma": "^5.0.0",
-		"prisma": "^6.7.0"
-	}
+  "name": "odin-file-uploader",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KevinLamza/odin-file-uploader.git"
+  },
+  "author": "Kevin Lamza",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KevinLamza/odin-file-uploader/issues"
+  },
+  "homepage": "https://github.com/KevinLamza/odin-file-uploader#readme",
+  "description": "",
+  "dependencies": {
+    "@prisma/client": "^6.7.0",
+    "@quixo3/prisma-session-store": "^3.1.13",
+    "dotenv": "^16.5.0",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "express-session": "^1.18.1",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0",
+    "pg": "^8.15.6"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.25.1",
+    "eslint": "^9.25.1",
+    "globals": "^16.0.0",
+    "prettier-plugin-ejs": "^1.0.3",
+    "prettier-plugin-prisma": "^5.0.0",
+    "prisma": "^6.7.0"
+  }
 }

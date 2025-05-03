@@ -7,6 +7,7 @@ import session from 'express-session';
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { PrismaClient } from '@prisma/client';
+import { PrismaSessionStore } from '@quixo3/prisma-session-store';
 
 const PORT = process.env.PORT || 3000;
 
@@ -16,7 +17,19 @@ const __dirname = path.dirname(__filename); // get the name of the directory
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-app.use(session({ secret: 'cats', resave: false, saveUninitialized: false }));
+app.use(
+	session({
+		cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 },
+		secret: 'cats',
+		resave: true,
+		saveUninitialized: true,
+		store: new PrismaSessionStore(new PrismaClient(), {
+			checkPeriod: 2 * 60 * 1000,
+			dbRecordIdIsSessionId: true,
+			dbRecordIdFunction: undefined,
+		}),
+	})
+);
 app.use(passport.session());
 app.use(express.urlencoded({ extended: false }));
 

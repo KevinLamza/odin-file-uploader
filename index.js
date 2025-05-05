@@ -39,7 +39,7 @@ passport.use(
 	new LocalStrategy(async (username, password, done) => {
 		try {
 			const user = await prisma.users.findUnique({
-				where: { username: username },
+				where: { name: username },
 			});
 
 			if (!user) {
@@ -92,6 +92,19 @@ main()
 
 app.get('/', (req, res) => {
 	res.render('index', { user: req.user });
+});
+
+app.get('/sign-up-form', (req, res) => res.render('sign-up-form'));
+
+app.post('/sign-up-form', async (req, res, next) => {
+	try {
+		await prisma.users.create({
+			data: { name: req.body.username, password: req.body.password },
+		});
+		res.redirect('/');
+	} catch (err) {
+		return next(err);
+	}
 });
 
 app.post(

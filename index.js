@@ -6,6 +6,7 @@ import express from 'express';
 import session from 'express-session';
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
+import bcrypt from 'bcryptjs';
 import { PrismaClient } from '@prisma/client';
 import { PrismaSessionStore } from '@quixo3/prisma-session-store';
 
@@ -45,7 +46,8 @@ passport.use(
 			if (!user) {
 				return done(null, false, { message: 'Incorrect username' });
 			}
-			if (user.password !== password) {
+			const match = await bcrypt.compare(password, user.password);
+			if (!match) {
 				return done(null, false, { message: 'Incorrect password' });
 			}
 			return done(null, user);
@@ -98,8 +100,9 @@ app.get('/sign-up-form', (req, res) => res.render('sign-up-form'));
 
 app.post('/sign-up-form', async (req, res, next) => {
 	try {
+		const hashedPassword = await bcrypt.hash(req.body.password, 10);
 		await prisma.users.create({
-			data: { name: req.body.username, password: req.body.password },
+			data: { name: req.body.username, password: hashedPassword },
 		});
 		res.redirect('/');
 	} catch (err) {

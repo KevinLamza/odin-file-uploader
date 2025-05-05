@@ -9,6 +9,20 @@ import { Strategy as LocalStrategy } from 'passport-local';
 import bcrypt from 'bcryptjs';
 import { PrismaClient } from '@prisma/client';
 import { PrismaSessionStore } from '@quixo3/prisma-session-store';
+import multer from 'multer';
+
+const storage = multer.diskStorage({
+	destination: function (req, file, cb) {
+		cb(null, '/home/kevin/repositories/uploads');
+	},
+	filename: function (req, file, cb) {
+		const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+		cb(null, file.fieldname + '-' + uniqueSuffix);
+	},
+});
+
+// const upload = multer({ storage: storage });
+const upload = multer({ dest: 'uploads/' });
 
 const PORT = process.env.PORT || 3000;
 
@@ -108,6 +122,14 @@ app.post('/sign-up-form', async (req, res, next) => {
 	} catch (err) {
 		return next(err);
 	}
+});
+
+app.get('/upload-form', (req, res) => res.render('upload-form'));
+
+app.post('/upload-form', upload.single('file'), function (req, res, next) {
+	// req.file is the `avatar` file
+	// req.body will hold the text fields, if there were any
+	console.log(req.file, req.body);
 });
 
 app.post(

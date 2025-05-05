@@ -1,89 +1,62 @@
 import 'dotenv/config';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
-// import { Pool } from 'pg'; might be unnecessary, because of prisma-session-store
-import express from 'express';
+import express from 'express'; // e austesten
 import session from 'express-session';
 import passport from 'passport';
-import { Strategy as LocalStrategy } from 'passport-local';
-import bcrypt from 'bcryptjs';
 import { PrismaClient } from '@prisma/client';
 import { PrismaSessionStore } from '@quixo3/prisma-session-store';
-import multer from 'multer';
+import { routes } from './routes/routes';
 
-const storage = multer.diskStorage({
-	destination: function (req, file, cb) {
-		cb(null, '/home/kevin/repositories/uploads');
-	},
-	filename: function (req, file, cb) {
-		const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-		cb(null, file.fieldname + '-' + uniqueSuffix);
-	},
-});
+// const storage = multer.diskStorage({
+// 	destination: function (req, file, cb) {
+// 		cb(null, '/home/kevin/repositories/uploads');
+// 	},
+// 	filename: function (req, file, cb) {
+// 		const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+// 		cb(null, file.fieldname + '-' + uniqueSuffix);
+// 	},
+// });
 
 // const upload = multer({ storage: storage });
-const upload = multer({ dest: 'uploads/' });
 
 const PORT = process.env.PORT || 3000;
 
+// SETUP EXPRESS AND PRISMA
 const app = express();
+const prisma = new PrismaClient();
+
+// PARSER TO HANDLE FORM DATA IN FORM REQUESTS
+app.use(express.urlencoded({ extended: false }));
+
+// SETUP VIEWS
 const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
 const __dirname = path.dirname(__filename); // get the name of the directory
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-const prisma = new PrismaClient();
-
+// INITIALIZE SESSION
 app.use(
 	session({
 		cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 },
 		secret: 'cats',
 		resave: true,
 		saveUninitialized: true,
-		store: new PrismaSessionStore(new PrismaClient(), {
+		store: new PrismaSessionStore(prisma, {
 			checkPeriod: 2 * 60 * 1000,
 			dbRecordIdIsSessionId: true,
 			dbRecordIdFunction: undefined,
 		}),
 	})
 );
+
+// MAKE PASSPORT USE THE INITIALIZED SESSION
+// MUST BE AFTER SESSION MIDDLEWARE AND BEFORE ROUTE MIDDLEWARE
+app.use(passport.initialize());
 app.use(passport.session());
-app.use(express.urlencoded({ extended: false }));
 
-passport.use(
-	new LocalStrategy(async (username, password, done) => {
-		try {
-			const user = await prisma.users.findUnique({
-				where: { name: username },
-			});
-
-			if (!user) {
-				return done(null, false, { message: 'Incorrect username' });
-			}
-			const match = await bcrypt.compare(password, user.password);
-			if (!match) {
-				return done(null, false, { message: 'Incorrect password' });
-			}
-			return done(null, user);
-		} catch (err) {
-			return done(err);
-		}
-	})
-);
-
-passport.serializeUser((user, done) => {
-	done(null, user.id);
-});
-
-passport.deserializeUser(async (id, done) => {
-	try {
-		const user = await prisma.users.findUnique({ where: { id: id } });
-
-		done(null, user);
-	} catch (err) {
-		done(err);
-	}
-});
+// ROUTES
+app.use('/', routes);
 
 async function main() {
 	const allUsers = await prisma.users.findMany();
@@ -106,47 +79,11 @@ main()
 		process.exit(1);
 	});
 
-app.get('/', (req, res) => {
-	res.render('index', { user: req.user });
-});
-
-app.get('/sign-up-form', (req, res) => res.render('sign-up-form'));
-
-app.post('/sign-up-form', async (req, res, next) => {
-	try {
-		const hashedPassword = await bcrypt.hash(req.body.password, 10);
-		await prisma.users.create({
-			data: { name: req.body.username, password: hashedPassword },
-		});
-		res.redirect('/');
-	} catch (err) {
-		return next(err);
-	}
-});
-
-app.get('/upload-form', (req, res) => res.render('upload-form'));
-
-app.post('/upload-form', upload.single('file'), function (req, res, next) {
-	// req.file is the `avatar` file
-	// req.body will hold the text fields, if there were any
-	console.log(req.file, req.body);
-});
-
-app.post(
-	'/log-in',
-	passport.authenticate('local', {
-		successRedirect: '/',
-		failureRedirect: '/',
-	})
-);
-
-app.get('/log-out', (req, res, next) => {
-	req.logout((err) => {
-		if (err) {
-			return next(err);
-		}
-		res.redirect('/');
-	});
+// ERROR HANDLING
+app.use((err, req, res, next) => {
+	// next löschen?
+	console.error(err.stack);
+	res.status(500).send('Something went wrong!');
 });
 
 app.listen(PORT, () => {

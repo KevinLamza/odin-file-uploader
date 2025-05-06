@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import * as authentificationController from '../controllers/authentificationController';
-import { validateUser } from './validationController';
-import * as routeController from '../controllers/routeController';
+import * as authentificationController from '../controllers/authentificationController.js';
+import { validateUser } from '../controllers/validationController.js';
+import * as routeController from '../controllers/routeController.js';
 import multer from 'multer';
 const upload = multer({ dest: 'uploads/' });
 

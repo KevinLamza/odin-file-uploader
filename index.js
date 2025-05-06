@@ -6,8 +6,7 @@ import session from 'express-session';
 import passport from 'passport';
 import { PrismaClient } from '@prisma/client';
 import { PrismaSessionStore } from '@quixo3/prisma-session-store';
-import { routes } from './routes/routes';
-
+import { routes } from './routes/routes.js';
 // const storage = multer.diskStorage({
 // 	destination: function (req, file, cb) {
 // 		cb(null, '/home/kevin/repositories/uploads');

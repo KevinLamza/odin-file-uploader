@@ -46,7 +46,7 @@ export const authenticateUser = function (req, res, next) {
 		}
 		if (!user) {
 			console.log(info.message);
-			return res.render('log-in', { errors: [{ msg: info.message }] });
+			return res.render('index', { errors: [{ msg: info.message }] });
 		}
 
 		// NEED TO CALL req.login()!!!
@@ -58,7 +58,7 @@ export const isAuthenticated = (req, res, next) => {
 	if (req.user) {
 		next();
 	} else {
-		res.redirect('/log-in');
+		res.redirect('/');
 	}
 };
 

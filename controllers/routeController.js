@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 import { validationResult } from 'express-validator';
-import * as queryController from '../controllers/queryController';
+import * as queryController from '../controllers/queryController.js';
 
 export const getIndexPage = async (req, res, next) => {
 	try {

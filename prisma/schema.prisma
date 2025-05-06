@@ -24,7 +24,7 @@ model Session {
 model folders {
     id        Int       @id @default(autoincrement())
     owner     users     @relation(fields: [ownerId], references: [id])
-    ownerId   String    @unique
+    ownerId   String
     title     String    @db.VarChar(255)
     createdAt DateTime  @default(now())
     parentId  Int?

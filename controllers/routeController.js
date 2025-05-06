@@ -22,7 +22,7 @@ export const getCreateUser = (req, res) => {
 export const postCreateUser = async (req, res, next) => {
 	const errors = validationResult(req);
 	if (!errors.isEmpty()) {
-		return res.status(400).render('sign-up', {
+		return res.status(400).render('sign-up-form', {
 			title: 'sign-up',
 			errors: errors.array(),
 		});

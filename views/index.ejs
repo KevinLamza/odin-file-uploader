@@ -5,20 +5,25 @@
     <title>Log In</title>
   </head>
   <body>
-    <% if (locals.user) {%>
-    <h1>
-      WELCOME BACK
-      <%= user.name %>
-      <%= user.id %>
-    </h1>
-    <a href="/log-out">LOG OUT</a>
-    <h2>Add new folder</h2>
-    <form action="/add-folder" method="POST">
-      <label for="title">Title</label>
-      <input id="title" name="title" placeholder="title" type="text" />
-      <input type="hidden" id="userId" name="userId" value=<%= user.id %>>
-      <button type="submit">Add folder</button>
-    </form>
+    <% if (locals.user) { %>
+      <h1>
+        WELCOME BACK
+        <%= user.name %>
+        <%= user.id %>
+      </h1>
+      <a href="/log-out">LOG OUT</a>
+      <h2>Add new folder</h2>
+      <form action="/add-folder" method="POST">
+        <label for="title">Title</label>
+        <input id="title" name="title" placeholder="title" type="text" />
+        <input type="hidden" id="userId" name="userId" value=<%= user.id %>>
+        <button type="submit">Add folder</button>
+      </form>
+      <% folders.forEach((folder) => { %>
+        <span><%= folder.title %></span><br />
+        <span><%= folder.createdAt %></span><br />
+        <span>----------</span><br />
+        <% }); %>
     <% } else { %>
     <h1>please log in or <a href="/sign-up-form">sign up</a></h1>
     <%- include("partials/errors.ejs") %>

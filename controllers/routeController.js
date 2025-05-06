@@ -5,9 +5,11 @@ import * as queryController from '../controllers/queryController.js';
 export const getIndexPage = async (req, res, next) => {
 	try {
 		// const { rows } = await selectAllMessages();
+		const folders = await queryController.getFolder(req.user.id);
+		console.log(folders);
 		res.render('index', {
 			user: req.user,
-			// messages: rows,
+			folders: folders,
 		});
 	} catch (error) {
 		console.error(error);

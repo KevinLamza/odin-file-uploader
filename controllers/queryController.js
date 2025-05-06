@@ -13,3 +13,13 @@ export const addFolder = async (title, ownerId, parentId) => {
 		data: { title: title, ownerId: ownerId, parentId },
 	});
 };
+
+export const getFolder = async (ownerId) => {
+	return await prisma.folders.findMany({
+		where: {
+			ownerId: {
+				equals: ownerId,
+			},
+		},
+	});
+};

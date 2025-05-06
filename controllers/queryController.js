@@ -7,3 +7,9 @@ export const insertUser = async (username, password) => {
 		data: { name: username, password: password },
 	});
 };
+
+export const addFolder = async (title, ownerId, parentId) => {
+	await prisma.folders.create({
+		data: { title: title, ownerId: ownerId, parentId },
+	});
+};

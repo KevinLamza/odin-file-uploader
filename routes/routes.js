@@ -26,3 +26,4 @@ routes.post(
 	upload.single('file'),
 	routeController.postUploadForm
 );
+routes.post('/add-folder', routeController.postAddFolder);

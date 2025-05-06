@@ -54,3 +54,15 @@ export const postUploadForm = async (req, res, next) => {
 		next(error);
 	}
 };
+
+export const postAddFolder = async (req, res, next) => {
+	try {
+		console.log(req.body.title);
+		console.log(req.body.userId);
+		await queryController.addFolder(req.body.title, req.body.userId);
+		res.redirect('/');
+	} catch (error) {
+		console.error(error);
+		next(error);
+	}
+};

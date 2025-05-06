@@ -9,8 +9,16 @@
     <h1>
       WELCOME BACK
       <%= user.name %>
+      <%= user.id %>
     </h1>
     <a href="/log-out">LOG OUT</a>
+    <h2>Add new folder</h2>
+    <form action="/add-folder" method="POST">
+      <label for="title">Title</label>
+      <input id="title" name="title" placeholder="title" type="text" />
+      <input type="hidden" id="userId" name="userId" value=<%= user.id %>>
+      <button type="submit">Add folder</button>
+    </form>
     <% } else { %>
     <h1>please log in or <a href="/sign-up-form">sign up</a></h1>
     <%- include("partials/errors.ejs") %>

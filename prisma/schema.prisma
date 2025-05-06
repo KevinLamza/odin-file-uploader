@@ -8,9 +8,10 @@ generator client {
 }
 
 model users {
-    id       String @id @default(uuid())
-    name     String @unique @db.VarChar(255)
-    password String @db.VarChar(255)
+    id       String    @id @default(uuid())
+    name     String    @unique @db.VarChar(255)
+    password String    @db.VarChar(255)
+    folders  folders[]
 }
 
 model Session {
@@ -18,4 +19,15 @@ model Session {
     sid       String   @unique
     data      String
     expiresAt DateTime
+}
+
+model folders {
+    id        Int       @id @default(autoincrement())
+    owner     users     @relation(fields: [ownerId], references: [id])
+    ownerId   String    @unique
+    title     String    @db.VarChar(255)
+    createdAt DateTime  @default(now())
+    parentId  Int?
+    parent    folders?  @relation("FolderStructure", fields: [parentId], references: [id])
+    children  folders[] @relation("FolderStructure")
 }

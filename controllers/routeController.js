@@ -6,27 +6,26 @@ export const getIndexPage = async (req, res, next) => {
 	try {
 		if (req.user) {
 			let folders;
-			let parentTitle;
+			let parent;
 			console.log(`Requesting contents of folder ${req.params.folderId}`);
 			if (req.params.folderId === undefined) {
 				folders = await queryController.getFolder(req.user.id, null);
-				parentTitle = { title: '/' };
+				parent = { id: null, title: '/' };
 			} else {
 				folders = await queryController.getFolder(
 					req.user.id,
 					req.params.folderId
 				);
-				parentTitle = await queryController.getTitle(
-					req.params.folderId
-				);
+				parent = await queryController.getParent(req.params.folderId);
 			}
 			console.log(folders);
-			console.log(parentTitle);
+			console.log(parent);
 			res.render('index', {
 				user: req.user,
 				folders: folders,
 				parentId: req.params.folderId,
-				parentTitle: parentTitle,
+				parentTitle: parent.title,
+				parentURL: '/folder/' + parent.id,
 			});
 		} else {
 			res.render('index');

@@ -12,7 +12,7 @@
         <%= user.id %>
       </h1>
       <a href="/log-out">LOG OUT</a>
-      <h2><%= parentTitle.title %></h2>
+      <h2><a href=<%= parentURL %>><%= parentTitle %></a></h2>
       <form action="/add-folder" method="POST">
         <label for="title">Title</label>
         <input id="title" name="title" placeholder="title" type="text" />

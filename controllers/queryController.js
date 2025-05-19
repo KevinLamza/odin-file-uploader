@@ -14,6 +14,49 @@ export const addFolder = async (title, ownerId, parentId) => {
 	});
 };
 
+export const requestFolder = async (ownerId, id) => {
+	return await prisma.folders.findUnique({
+		where: {
+			AND: [
+				{
+					ownerId: {
+						equals: ownerId,
+					},
+				},
+				{
+					id: {
+						equals: id,
+					},
+				},
+			],
+		},
+	});
+};
+
+export const requestFolderChildren = async (ownerId, id) => {
+	return await prisma.folders.findMany({
+		where: {
+			AND: [
+				{
+					ownerId: {
+						equals: ownerId,
+					},
+				},
+				{
+					parentId: {
+						equals: id,
+					},
+				},
+			],
+		},
+	});
+};
+
+export const requestFolderParent = async (ownerId, id) => {
+	const parent = requestFolder(ownerId, id);
+	return await prisma.folders.findUnique(ownerId, parent.id);
+};
+
 export const getFolder = async (ownerId, parentId) => {
 	return await prisma.folders.findMany({
 		where: {
@@ -33,12 +76,13 @@ export const getFolder = async (ownerId, parentId) => {
 	});
 };
 
-export const getTitle = async (folderId) => {
+export const getParent = async (folderId) => {
 	return await prisma.folders.findUnique({
 		where: {
 			id: parseInt(folderId),
 		},
 		select: {
+			id: true,
 			title: true,
 		},
 	});

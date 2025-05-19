@@ -72,3 +72,12 @@ export const postAddFolder = async (req, res, next) => {
 		next(error);
 	}
 };
+
+export const getFolder = async (req, res, next) => {
+	try {
+		console.log(`Requesting contents of folder ${req.params.folderId}`);
+	} catch (error) {
+		console.error(error);
+		next(error);
+	}
+};

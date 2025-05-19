@@ -27,3 +27,4 @@ routes.post(
 	routeController.postUploadForm
 );
 routes.post('/add-folder', routeController.postAddFolder);
+routes.get('/folder/:folderId', routeController.getFolder);

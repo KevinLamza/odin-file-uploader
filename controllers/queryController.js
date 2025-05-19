@@ -14,21 +14,12 @@ export const addFolder = async (title, ownerId, parentId) => {
 	});
 };
 
-export const requestFolder = async (ownerId, id) => {
+export const requestFolder = async (id) => {
+	// console.log('hi');
+	// console.log(typeof id + ' ' + id);
 	return await prisma.folders.findUnique({
 		where: {
-			AND: [
-				{
-					ownerId: {
-						equals: ownerId,
-					},
-				},
-				{
-					id: {
-						equals: id,
-					},
-				},
-			],
+			id: id,
 		},
 	});
 };
@@ -52,9 +43,13 @@ export const requestFolderChildren = async (ownerId, id) => {
 	});
 };
 
-export const requestFolderParent = async (ownerId, id) => {
-	const folder = requestFolder(ownerId, id);
-	return await prisma.folders.findUnique(ownerId, folder.parentId);
+export const requestFolderParent = async (id) => {
+	const folder = await requestFolder(id);
+	// console.log(folder);
+	if (folder.parentId === null) {
+		return { id: null, title: null };
+	}
+	return await requestFolder(folder.parentId);
 };
 
 export const getFolder = async (ownerId, parentId) => {

@@ -5,27 +5,60 @@ import * as queryController from '../controllers/queryController.js';
 export const getIndexPage = async (req, res, next) => {
 	try {
 		if (req.user) {
-			let folders;
-			let parent;
-			console.log(`Requesting contents of folder ${req.params.folderId}`);
+			// let folders;
+			// let parent;
+			// console.log(`Requesting contents of folder ${req.params.folderId}`);
+			// if (req.params.folderId === undefined) {
+			// 	folders = await queryController.getFolder(req.user.id, null);
+			// 	parent = { id: null, title: '/' };
+			// } else {
+			// 	folders = await queryController.getFolder(
+			// 		req.user.id,
+			// 		req.params.folderId
+			// 	);
+			// 	parent = await queryController.getParent(req.params.folderId);
+			// }
+			// console.log(folders);
+			// console.log(parent);
+			let requestedFolder;
+			let requestedFolderChildren;
+			let requestedFolderParent;
+
 			if (req.params.folderId === undefined) {
-				folders = await queryController.getFolder(req.user.id, null);
-				parent = { id: null, title: '/' };
+				requestedFolderChildren =
+					await queryController.requestFolderChildren(
+						req.user.id,
+						null
+					);
+				requestedFolder = { id: null, title: null };
+				requestedFolderParent = { id: null, title: null };
 			} else {
-				folders = await queryController.getFolder(
-					req.user.id,
-					req.params.folderId
+				requestedFolderChildren =
+					await queryController.requestFolderChildren(
+						req.user.id,
+						parseInt(req.params.folderId)
+					);
+				// console.log('children okay');
+				requestedFolder = await queryController.requestFolder(
+					parseInt(req.params.folderId)
 				);
-				parent = await queryController.getParent(req.params.folderId);
+				// console.log('folder okay');
+				requestedFolderParent =
+					await queryController.requestFolderParent(
+						parseInt(req.params.folderId)
+					);
+				// console.log('parent okay');
 			}
-			console.log(folders);
-			console.log(parent);
+
+			console.log(requestedFolder);
+			console.log(requestedFolderChildren);
+			console.log(requestedFolderParent);
+
 			res.render('index', {
 				user: req.user,
-				folders: folders,
-				parentId: req.params.folderId,
-				parentTitle: parent.title,
-				parentURL: '/folder/' + parent.id,
+				requestedFolder: requestedFolder,
+				requestedFolderChildren: requestedFolderChildren,
+				requestedFolderParent: requestedFolderParent,
 			});
 		} else {
 			res.render('index');

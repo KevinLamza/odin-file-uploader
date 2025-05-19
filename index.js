@@ -65,7 +65,7 @@ async function main() {
 	// 		password: '789',
 	// 	},
 	// });
-	console.log(allUsers);
+	// console.log(allUsers);
 }
 
 main()

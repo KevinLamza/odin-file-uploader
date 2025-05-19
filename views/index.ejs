@@ -12,17 +12,25 @@
         <%= user.id %>
       </h1>
       <a href="/log-out">LOG OUT</a>
-      <h2><a href=<%= parentURL %>><%= parentTitle %></a></h2>
+      <%
+        let returnURL;
+        if (requestedFolderParent.id === null) {
+          returnURL = "/";
+        } else {
+          returnURL = "/folder/" + requestedFolderParent.id;
+        }
+      %>
+      <h2><a href=<%= returnURL %>>Go back</a></h2>
       <form action="/add-folder" method="POST">
         <label for="title">Title</label>
         <input id="title" name="title" placeholder="title" type="text" />
         <input type="hidden" id="userId" name="userId" value=<%= user.id %>>
-        <input type="hidden" id="parentId" name="parentId" value=<%= parentId %>>
+        <input type="hidden" id="parentId" name="parentId" value=<%= requestedFolder.id %>>
         <button type="submit">Add folder</button>
       </form>
-      <% folders.forEach((folder) => { %>
-        <span><%= folder.title %></span><br />
-        <span><%= folder.createdAt %></span><br />
+      <% requestedFolderChildren.forEach((child) => { %>
+        <span><%= child.title %></span><br />
+        <span><%= child.createdAt %></span><br />
         <span>----------</span><br />
         <% }); %>
     <% } else { %>

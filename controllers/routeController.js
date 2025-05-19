@@ -5,55 +5,36 @@ import * as queryController from '../controllers/queryController.js';
 export const getIndexPage = async (req, res, next) => {
 	try {
 		if (req.user) {
-			// let folders;
-			// let parent;
-			// console.log(`Requesting contents of folder ${req.params.folderId}`);
-			// if (req.params.folderId === undefined) {
-			// 	folders = await queryController.getFolder(req.user.id, null);
-			// 	parent = { id: null, title: '/' };
-			// } else {
-			// 	folders = await queryController.getFolder(
-			// 		req.user.id,
-			// 		req.params.folderId
-			// 	);
-			// 	parent = await queryController.getParent(req.params.folderId);
-			// }
-			// console.log(folders);
-			// console.log(parent);
 			let requestedFolder;
 			let requestedFolderChildren;
 			let requestedFolderParent;
 
-			if (req.params.folderId === undefined) {
+			async function sendToRootFolder(userId) {
 				requestedFolderChildren =
-					await queryController.requestFolderChildren(
-						req.user.id,
-						null
-					);
+					await queryController.requestFolderChildren(userId, null);
 				requestedFolder = { id: null, title: null };
 				requestedFolderParent = { id: null, title: null };
+			}
+
+			if (req.params.folderId === undefined) {
+				await sendToRootFolder(req.user.id);
 			} else {
 				requestedFolderChildren =
 					await queryController.requestFolderChildren(
 						req.user.id,
 						parseInt(req.params.folderId)
 					);
-				// console.log('children okay');
 				requestedFolder = await queryController.requestFolder(
 					parseInt(req.params.folderId)
 				);
-				// console.log('folder okay');
 				requestedFolderParent =
 					await queryController.requestFolderParent(
 						parseInt(req.params.folderId)
 					);
-				// console.log('parent okay');
 			}
-
-			console.log(requestedFolder);
-			console.log(requestedFolderChildren);
-			console.log(requestedFolderParent);
-
+			if (req.params && req.user.id != requestedFolder.ownerId) {
+				await sendToRootFolder(req.user.id);
+			}
 			res.render('index', {
 				user: req.user,
 				requestedFolder: requestedFolder,

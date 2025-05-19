@@ -53,8 +53,8 @@ export const requestFolderChildren = async (ownerId, id) => {
 };
 
 export const requestFolderParent = async (ownerId, id) => {
-	const parent = requestFolder(ownerId, id);
-	return await prisma.folders.findUnique(ownerId, parent.id);
+	const folder = requestFolder(ownerId, id);
+	return await prisma.folders.findUnique(ownerId, folder.parentId);
 };
 
 export const getFolder = async (ownerId, parentId) => {

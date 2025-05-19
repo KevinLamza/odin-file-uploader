@@ -4,13 +4,29 @@ import * as queryController from '../controllers/queryController.js';
 
 export const getIndexPage = async (req, res, next) => {
 	try {
-		// const { rows } = await selectAllMessages();
 		if (req.user) {
-			const folders = await queryController.getFolder(req.user.id);
+			let folders;
+			let parentTitle;
+			console.log(`Requesting contents of folder ${req.params.folderId}`);
+			if (req.params.folderId === undefined) {
+				folders = await queryController.getFolder(req.user.id, null);
+				parentTitle = { title: '/' };
+			} else {
+				folders = await queryController.getFolder(
+					req.user.id,
+					req.params.folderId
+				);
+				parentTitle = await queryController.getTitle(
+					req.params.folderId
+				);
+			}
 			console.log(folders);
+			console.log(parentTitle);
 			res.render('index', {
 				user: req.user,
 				folders: folders,
+				parentId: req.params.folderId,
+				parentTitle: parentTitle,
 			});
 		} else {
 			res.render('index');
@@ -65,7 +81,11 @@ export const postAddFolder = async (req, res, next) => {
 	try {
 		console.log(req.body.title);
 		console.log(req.body.userId);
-		await queryController.addFolder(req.body.title, req.body.userId);
+		await queryController.addFolder(
+			req.body.title,
+			req.body.userId,
+			parseInt(req.body.parentId)
+		);
 		res.redirect('/');
 	} catch (error) {
 		console.error(error);
@@ -73,11 +93,22 @@ export const postAddFolder = async (req, res, next) => {
 	}
 };
 
-export const getFolder = async (req, res, next) => {
-	try {
-		console.log(`Requesting contents of folder ${req.params.folderId}`);
-	} catch (error) {
-		console.error(error);
-		next(error);
-	}
-};
+// export const getFolder = async (req, res, next) => {
+// 	try {
+// 		console.log(`Requesting contents of folder ${req.params.folderId}`);
+// 		if (req.user) {
+// 			const folders = await queryController.getFolder(
+// 				req.user.id,
+// 				req.params.folderId
+// 			);
+// 			console.log(folders);
+// 			res.render('index', {
+// 				user: req.user,
+// 				folders: folders,
+// 			});
+// 		}
+// 	} catch (error) {
+// 		console.error(error);
+// 		next(error);
+// 	}
+// };

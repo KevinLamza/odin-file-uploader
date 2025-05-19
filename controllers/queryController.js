@@ -10,16 +10,36 @@ export const insertUser = async (username, password) => {
 
 export const addFolder = async (title, ownerId, parentId) => {
 	await prisma.folders.create({
-		data: { title: title, ownerId: ownerId, parentId },
+		data: { title: title, ownerId: ownerId, parentId: parentId },
 	});
 };
 
-export const getFolder = async (ownerId) => {
+export const getFolder = async (ownerId, parentId) => {
 	return await prisma.folders.findMany({
 		where: {
-			ownerId: {
-				equals: ownerId,
-			},
+			AND: [
+				{
+					ownerId: {
+						equals: ownerId,
+					},
+				},
+				{
+					parentId: {
+						equals: parseInt(parentId),
+					},
+				},
+			],
+		},
+	});
+};
+
+export const getTitle = async (folderId) => {
+	return await prisma.folders.findUnique({
+		where: {
+			id: parseInt(folderId),
+		},
+		select: {
+			title: true,
 		},
 	});
 };

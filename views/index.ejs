@@ -29,7 +29,8 @@
         <button type="submit">Add folder</button>
       </form>
       <% requestedFolderChildren.forEach((child) => { %>
-        <span><%= child.title %></span><br />
+        <% const childURL = "/folder/" + child.id %>
+        <span><a href=<%= childURL %>><%= child.title %></span></a><br />
         <span><%= child.createdAt %></span><br />
         <span>----------</span><br />
         <% }); %>

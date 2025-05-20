@@ -189,6 +189,7 @@ export const getRenameFolderPage = async (req, res, next) => {
 				user: req.user,
 				requestedFolder: requestedFolder,
 				requestedFolderParent: requestedFolderParent,
+				access: false, // hier nochmal reinschauen
 			});
 		}
 	} catch (error) {

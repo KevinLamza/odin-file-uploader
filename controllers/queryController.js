@@ -67,34 +67,3 @@ export const requestFolderParent = async (id) => {
 	}
 	return await requestFolder(folder.parentId);
 };
-
-// export const getFolder = async (ownerId, parentId) => {
-// 	return await prisma.folders.findMany({
-// 		where: {
-// 			AND: [
-// 				{
-// 					ownerId: {
-// 						equals: ownerId,
-// 					},
-// 				},
-// 				{
-// 					parentId: {
-// 						equals: parseInt(parentId),
-// 					},
-// 				},
-// 			],
-// 		},
-// 	});
-// };
-
-// export const getParent = async (folderId) => {
-// 	return await prisma.folders.findUnique({
-// 		where: {
-// 			id: parseInt(folderId),
-// 		},
-// 		select: {
-// 			id: true,
-// 			title: true,
-// 		},
-// 	});
-// };

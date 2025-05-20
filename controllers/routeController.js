@@ -40,6 +40,7 @@ export const getIndexPage = async (req, res, next) => {
 				requestedFolder: requestedFolder,
 				requestedFolderChildren: requestedFolderChildren,
 				requestedFolderParent: requestedFolderParent,
+				editMode: req.query.edit,
 			});
 		} else {
 			res.render('index');

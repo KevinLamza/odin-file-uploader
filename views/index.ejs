@@ -14,13 +14,17 @@
       <a href="/log-out">LOG OUT</a>
       <%
         let returnURL;
+        let currentURL;
         if (requestedFolderParent.id === null) {
           returnURL = "/";
+          currentURL = "/" + "?edit=true";
         } else {
           returnURL = "/folder/" + requestedFolderParent.id;
+          currentURL = "/folder/" + requestedFolder.id + "?edit=true";
         }
       %>
       <h2><a href=<%= returnURL %>>Go back</a></h2>
+      <h2><a href=<%= currentURL %>>Edit folders</a></h2>
       <form action="/add-folder" method="POST">
         <label for="title">Title</label>
         <input id="title" name="title" placeholder="title" type="text" />
@@ -32,6 +36,10 @@
         <% const childURL = "/folder/" + child.id %>
         <span><a href=<%= childURL %>><%= child.title %></span></a><br />
         <span><%= child.createdAt %></span><br />
+        <% console.log(editMode + "lolski") %>
+        <% if (editMode === "true") { %>
+          <button>Edit</button><br />
+        <% } %>
         <span>----------</span><br />
         <% }); %>
     <% } else { %>

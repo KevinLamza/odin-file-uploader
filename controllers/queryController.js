@@ -1,5 +1,4 @@
 import { PrismaClient } from '@prisma/client';
-import { useImperativeHandle } from 'react';
 
 const prisma = new PrismaClient();
 

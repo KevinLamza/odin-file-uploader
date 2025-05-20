@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import { validationResult } from 'express-validator';
 import * as queryController from '../controllers/queryController.js';
+import { Prisma } from '@prisma/client';
 
 export const getIndexPage = async (req, res, next) => {
 	try {
@@ -111,15 +112,36 @@ export const postDeleteFolder = async (req, res, next) => {
 	try {
 		console.log(req.body.userId);
 		console.log(req.body.folderId);
+		// console.log(req.body.currentId);
 
-		const folder = await queryController.requestFolder(req.body.folderId);
+		const folder = await queryController.requestFolder(
+			parseInt(req.body.folderId)
+		);
 		if (folder.ownerId === req.body.userId) {
-			// something
+			await recursiveFolderDeletion(req.body.userId, req.body.folderId);
+			res.redirect('/');
 		} else {
-			// something
+			res.redirect('/');
 		}
 	} catch (error) {
 		console.error(error);
 		next(error);
+	}
+};
+
+const recursiveFolderDeletion = async (ownerId, folderId) => {
+	try {
+		const children = await queryController.requestFolderChildren(
+			ownerId,
+			parseInt(folderId)
+		);
+		if (children.length >= 0) {
+			children.forEach((child) =>
+				recursiveFolderDeletion(ownerId, child.id)
+			);
+		} else return;
+		await queryController.deleteFolder(parseInt(folderId));
+	} catch (error) {
+		console.error(error);
 	}
 };

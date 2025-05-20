@@ -14,17 +14,27 @@
       <a href="/log-out">LOG OUT</a>
       <%
         let returnURL;
-        let currentURL;
+        let editURL;
+        let noEditURL;
         if (requestedFolderParent.id === null) {
           returnURL = "/";
-          currentURL = "/" + "?edit=true";
         } else {
           returnURL = "/folder/" + requestedFolderParent.id;
-          currentURL = "/folder/" + requestedFolder.id + "?edit=true";
+        }
+        if (requestedFolder.id === null) {
+          editURL = "/" + "?edit=true";
+          noEditURL = "/";
+        } else {
+          editURL = "/folder/" + requestedFolder.id + "?edit=true";
+          noEditURL = "/folder/" + requestedFolder.id;
         }
       %>
       <h2><a href=<%= returnURL %>>Go back</a></h2>
-      <h2><a href=<%= currentURL %>>Edit folders</a></h2>
+      <% if (editMode === "true") { %>
+      <h2><a href=<%= noEditURL %>>Leave edit mode</a></h2>
+      <% } else { %>
+      <h2><a href=<%= editURL %>>Edit folders</a></h2>
+      <% } %>
       <form action="/add-folder" method="POST">
         <label for="title">Title</label>
         <input id="title" name="title" placeholder="title" type="text" />

@@ -16,6 +16,7 @@
         let returnURL;
         let editURL;
         let noEditURL;
+        console.log(requestedFolder.id);
         if (requestedFolderParent.id === null) {
           returnURL = "/";
         } else {
@@ -46,7 +47,6 @@
         <% const childURL = "/folder/" + child.id %>
         <span><a href=<%= childURL %>><%= child.title %></span></a><br />
         <span><%= child.createdAt %></span><br />
-        <% console.log(editMode + "lolski") %>
         <% if (editMode === "true") { %>
           <button>Edit</button>
           <form action="/delete-folder" method="POST">

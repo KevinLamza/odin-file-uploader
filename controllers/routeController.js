@@ -96,12 +96,17 @@ export const postAddFolder = async (req, res, next) => {
 	try {
 		console.log(req.body.title);
 		console.log(req.body.userId);
+		console.log(req.body.parentId === '');
 		await queryController.addFolder(
 			req.body.title,
 			req.body.userId,
 			parseInt(req.body.parentId)
 		);
-		res.redirect('/');
+		if (req.body.parentId === '') {
+			res.redirect('/');
+		} else {
+			res.redirect('/folder/' + req.body.parentId);
+		}
 	} catch (error) {
 		console.error(error);
 		next(error);
@@ -110,16 +115,19 @@ export const postAddFolder = async (req, res, next) => {
 
 export const postDeleteFolder = async (req, res, next) => {
 	try {
-		console.log(req.body.userId);
-		console.log(req.body.folderId);
-		// console.log(req.body.currentId);
-
 		const folder = await queryController.requestFolder(
 			parseInt(req.body.folderId)
 		);
 		if (folder.ownerId === req.body.userId) {
+			const parentFolder = await queryController.requestFolderParent(
+				parseInt(req.body.folderId)
+			);
 			await recursiveFolderDeletion(req.body.userId, req.body.folderId);
-			res.redirect('/');
+			if (parentFolder.id === null) {
+				res.redirect('/');
+			} else {
+				res.redirect('/folder/' + parentFolder.id);
+			}
 		} else {
 			res.redirect('/');
 		}

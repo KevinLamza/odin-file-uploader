@@ -7,6 +7,7 @@
 	<body>
 		<h1>Rename the folder</h1>
 		<p>Current name: <%= requestedFolder.title %></p>
+		<%- include("partials/errors.ejs") %>
 		<form action="/rename-folder" method="POST">
 			<label for="title">New name</label>
 			<input id="title" name="title" placeholder="New Name" type="text" />

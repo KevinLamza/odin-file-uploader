@@ -94,12 +94,30 @@ export const postUploadForm = async (req, res, next) => {
 };
 
 export const postAddFolder = async (req, res, next) => {
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) {
+		console.log('next line');
+		console.log(req.body);
+		const requestedFolderChildren =
+			await queryController.requestFolderChildren(req.body.userId, null);
+		const requestedFolder = { id: null, title: null };
+		const requestedFolderParent = { id: null, title: null };
+		return res.status(400).render('index', {
+			errors: errors.array(),
+			user: req.body.userId,
+			requestedFolder: requestedFolder,
+			requestedFolderChildren: requestedFolderChildren,
+			requestedFolderParent: requestedFolderParent,
+			editMode: false,
+		});
+	}
 	try {
 		await queryController.addFolder(
 			req.body.title,
 			req.body.userId,
 			parseInt(req.body.parentId)
 		);
+
 		// the form is submitting the parentId, but when it's null ...
 		// ... html is submitting an emptry string instead of null
 		if (req.body.parentId === '') {
@@ -157,6 +175,21 @@ const recursiveFolderDeletion = async (ownerId, folderId) => {
 };
 
 export const postRenameFolder = async (req, res, next) => {
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) {
+		const requestedFolder = await queryController.requestFolder(
+			parseInt(req.body.folderId)
+		);
+		const requestedFolderParent = await queryController.requestFolderParent(
+			parseInt(req.body.folderId)
+		);
+		return res.status(400).render('rename-folder-form', {
+			errors: errors.array(),
+			requestedFolder: requestedFolder,
+			requestedFolderParent: requestedFolderParent,
+			user: req.body.userId,
+		});
+	}
 	try {
 		await queryController.renameFolder(
 			parseInt(req.body.folderId),

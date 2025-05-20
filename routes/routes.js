@@ -1,6 +1,9 @@
 import { Router } from 'express';
 import * as authentificationController from '../controllers/authentificationController.js';
-import { validateUser } from '../controllers/validationController.js';
+import {
+	validateUser,
+	validateFolderName,
+} from '../controllers/validationController.js';
 import * as routeController from '../controllers/routeController.js';
 import multer from 'multer';
 const upload = multer({ dest: 'uploads/' });
@@ -26,8 +29,12 @@ routes.post(
 	upload.single('file'),
 	routeController.postUploadForm
 );
-routes.post('/add-folder', routeController.postAddFolder);
+routes.post('/add-folder', validateFolderName, routeController.postAddFolder);
 routes.get('/folder/:folderId', routeController.getIndexPage);
 routes.post('/delete-folder', routeController.postDeleteFolder);
 routes.get('/renameFolder/:folderId', routeController.getRenameFolderPage);
-routes.post('/rename-folder', routeController.postRenameFolder);
+routes.post(
+	'/rename-folder',
+	validateFolderName,
+	routeController.postRenameFolder
+);

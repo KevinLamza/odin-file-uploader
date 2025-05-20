@@ -16,12 +16,13 @@
         let returnURL;
         let editURL;
         let noEditURL;
-        console.log(requestedFolder.id);
+
         if (requestedFolderParent.id === null) {
           returnURL = "/";
         } else {
           returnURL = "/folder/" + requestedFolderParent.id;
         }
+
         if (requestedFolder.id === null) {
           editURL = "/" + "?edit=true";
           noEditURL = "/";
@@ -30,11 +31,17 @@
           noEditURL = "/folder/" + requestedFolder.id;
         }
       %>
-      <h2><a href=<%= returnURL %>>Go back</a></h2>
+      <h2>
+        <a href=<%= returnURL %>>Go back</a>
+      </h2>
       <% if (editMode === "true") { %>
-      <h2><a href=<%= noEditURL %>>Leave edit mode</a></h2>
+        <h2>
+          <a href=<%= noEditURL %>>Leave edit mode</a>
+        </h2>
       <% } else { %>
-      <h2><a href=<%= editURL %>>Edit folders</a></h2>
+        <h2>
+          <a href=<%= editURL %>>Edit folders</a>
+        </h2>
       <% } %>
       <form action="/add-folder" method="POST">
         <label for="title">Title</label>
@@ -45,8 +52,12 @@
       </form>
       <% requestedFolderChildren.forEach((child) => { %>
         <% const childURL = "/folder/" + child.id %>
-        <span><a href=<%= childURL %>><%= child.title %></span></a><br />
-        <span><%= child.createdAt %></span><br />
+        <span>
+          <a href=<%= childURL %>><%= child.title %></a>
+        </span>
+        <br />
+        <span><%= child.createdAt %></span>
+        <br />
         <% if (editMode === "true") { %>
           <button>Edit</button>
           <form action="/delete-folder" method="POST">
@@ -57,18 +68,19 @@
           </form>
           <br />
         <% } %>
-        <span>----------</span><br />
+        <span>----------</span>
+        <br />
         <% }); %>
     <% } else { %>
-    <h1>please log in or <a href="/sign-up-form">sign up</a></h1>
-    <%- include("partials/errors.ejs") %>
-    <form action="/log-in" method="POST">
-      <label for="username">Username</label>
-      <input id="username" name="username" placeholder="username" type="text" />
-      <label for="password">Password</label>
-      <input id="password" name="password" type="password" />
-      <button type="submit">Log In</button>
-    </form>
+      <h1>please log in or <a href="/sign-up-form">sign up</a></h1>
+      <%- include("partials/errors.ejs") %>
+        <form action="/log-in" method="POST">
+          <label for="username">Username</label>
+          <input id="username" name="username" placeholder="username" type="text" />
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" />
+          <button type="submit">Log In</button>
+        </form>
     <%}%>
   </body>
 </html>

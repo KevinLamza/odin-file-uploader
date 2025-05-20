@@ -1,7 +1,6 @@
 import bcrypt from 'bcryptjs';
 import { validationResult } from 'express-validator';
 import * as queryController from '../controllers/queryController.js';
-import { Prisma } from '@prisma/client';
 
 export const getIndexPage = async (req, res, next) => {
 	try {
@@ -94,14 +93,13 @@ export const postUploadForm = async (req, res, next) => {
 
 export const postAddFolder = async (req, res, next) => {
 	try {
-		console.log(req.body.title);
-		console.log(req.body.userId);
-		console.log(req.body.parentId === '');
 		await queryController.addFolder(
 			req.body.title,
 			req.body.userId,
 			parseInt(req.body.parentId)
 		);
+		// the form is submitting the parentId, but when it's null ...
+		// ... html is submitting an emptry string instead of null
 		if (req.body.parentId === '') {
 			res.redirect('/');
 		} else {
@@ -119,6 +117,8 @@ export const postDeleteFolder = async (req, res, next) => {
 			parseInt(req.body.folderId)
 		);
 		if (folder.ownerId === req.body.userId) {
+			// parentFolder needs to be saved for redirect before the folder is deleted
+			// otherwise parentFolder will be unaccessible and no redirect possible
 			const parentFolder = await queryController.requestFolderParent(
 				parseInt(req.body.folderId)
 			);

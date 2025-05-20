@@ -96,8 +96,6 @@ export const postUploadForm = async (req, res, next) => {
 export const postAddFolder = async (req, res, next) => {
 	const errors = validationResult(req);
 	if (!errors.isEmpty()) {
-		console.log('next line');
-		console.log(req.body);
 		const requestedFolderChildren =
 			await queryController.requestFolderChildren(req.body.userId, null);
 		const requestedFolder = { id: null, title: null };
@@ -214,7 +212,6 @@ export const getRenameFolderPage = async (req, res, next) => {
 		const requestedFolderParent = await queryController.requestFolderParent(
 			parseInt(req.params.folderId)
 		);
-		console.log(requestedFolderParent);
 		if (req.params && req.user.id != requestedFolder.ownerId) {
 			throw new Error('no access');
 		} else {

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Rename the folder</title>
+	</head>
+	<body>
+		<h1>Rename the folder</h1>
+		<p>Current name: <%= requestedFolder.title %></p>
+		<form action="/rename-folder" method="POST">
+			<label for="title">New name</label>
+			<input id="title" name="title" placeholder="New Name" type="text" />
+			<input type="hidden" id="userId" name="userId" value=<%= user.id %>>
+			<input type="hidden" id="folderId" name="folderId" value=<%= requestedFolder.id %>>
+			<input type="hidden" id="parentId" name="parentId" value=<%= requestedFolderParent.id %>>
+			<button type="submit">Save</button>
+		</form>
+	</body>
+</html>

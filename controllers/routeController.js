@@ -32,6 +32,8 @@ export const getIndexPage = async (req, res, next) => {
 						parseInt(req.params.folderId)
 					);
 			}
+			// this line makes sure that user can't access folder
+			// that are not theirs by modifying the url
 			if (req.params && req.user.id != requestedFolder.ownerId) {
 				await sendToRootFolder(req.user.id);
 			}
@@ -151,5 +153,46 @@ const recursiveFolderDeletion = async (ownerId, folderId) => {
 		await queryController.deleteFolder(parseInt(folderId));
 	} catch (error) {
 		console.error(error);
+	}
+};
+
+export const postRenameFolder = async (req, res, next) => {
+	try {
+		await queryController.renameFolder(
+			parseInt(req.body.folderId),
+			req.body.title
+		);
+		if (req.body.parentId === '') {
+			res.redirect('/');
+		} else {
+			res.redirect('/folder/' + req.body.parentId);
+		}
+	} catch (error) {
+		console.error(error);
+		next(error);
+	}
+};
+
+export const getRenameFolderPage = async (req, res, next) => {
+	try {
+		const requestedFolder = await queryController.requestFolder(
+			parseInt(req.params.folderId)
+		);
+		const requestedFolderParent = await queryController.requestFolderParent(
+			parseInt(req.params.folderId)
+		);
+		console.log(requestedFolderParent);
+		if (req.params && req.user.id != requestedFolder.ownerId) {
+			throw new Error('no access');
+		} else {
+			res.render('rename-folder-form', {
+				user: req.user,
+				requestedFolder: requestedFolder,
+				requestedFolderParent: requestedFolderParent,
+			});
+		}
+	} catch (error) {
+		console.error(error);
+		next(error);
 	}
 };

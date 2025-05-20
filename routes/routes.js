@@ -29,3 +29,5 @@ routes.post(
 routes.post('/add-folder', routeController.postAddFolder);
 routes.get('/folder/:folderId', routeController.getIndexPage);
 routes.post('/delete-folder', routeController.postDeleteFolder);
+routes.get('/renameFolder/:folderId', routeController.getRenameFolderPage);
+routes.post('/rename-folder', routeController.postRenameFolder);

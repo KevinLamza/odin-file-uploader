@@ -22,6 +22,17 @@ export const deleteFolder = async (id) => {
 	});
 };
 
+export const renameFolder = async (id, title) => {
+	await prisma.folders.update({
+		where: {
+			id: id,
+		},
+		data: {
+			title: title,
+		},
+	});
+};
+
 export const requestFolder = async (id) => {
 	return await prisma.folders.findUnique({
 		where: {

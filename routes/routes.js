@@ -28,3 +28,4 @@ routes.post(
 );
 routes.post('/add-folder', routeController.postAddFolder);
 routes.get('/folder/:folderId', routeController.getIndexPage);
+routes.post('/delete-folder', routeController.postDeleteFolder);

@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { useImperativeHandle } from 'react';
 
 const prisma = new PrismaClient();
 
@@ -11,6 +12,14 @@ export const insertUser = async (username, password) => {
 export const addFolder = async (title, ownerId, parentId) => {
 	await prisma.folders.create({
 		data: { title: title, ownerId: ownerId, parentId: parentId },
+	});
+};
+
+export const deleteFolder = async (id) => {
+	await prisma.folders.delete({
+		where: {
+			id: id,
+		},
 	});
 };
 
@@ -49,33 +58,33 @@ export const requestFolderParent = async (id) => {
 	return await requestFolder(folder.parentId);
 };
 
-export const getFolder = async (ownerId, parentId) => {
-	return await prisma.folders.findMany({
-		where: {
-			AND: [
-				{
-					ownerId: {
-						equals: ownerId,
-					},
-				},
-				{
-					parentId: {
-						equals: parseInt(parentId),
-					},
-				},
-			],
-		},
-	});
-};
+// export const getFolder = async (ownerId, parentId) => {
+// 	return await prisma.folders.findMany({
+// 		where: {
+// 			AND: [
+// 				{
+// 					ownerId: {
+// 						equals: ownerId,
+// 					},
+// 				},
+// 				{
+// 					parentId: {
+// 						equals: parseInt(parentId),
+// 					},
+// 				},
+// 			],
+// 		},
+// 	});
+// };
 
-export const getParent = async (folderId) => {
-	return await prisma.folders.findUnique({
-		where: {
-			id: parseInt(folderId),
-		},
-		select: {
-			id: true,
-			title: true,
-		},
-	});
-};
+// export const getParent = async (folderId) => {
+// 	return await prisma.folders.findUnique({
+// 		where: {
+// 			id: parseInt(folderId),
+// 		},
+// 		select: {
+// 			id: true,
+// 			title: true,
+// 		},
+// 	});
+// };

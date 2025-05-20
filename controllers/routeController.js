@@ -107,22 +107,19 @@ export const postAddFolder = async (req, res, next) => {
 	}
 };
 
-// export const getFolder = async (req, res, next) => {
-// 	try {
-// 		console.log(`Requesting contents of folder ${req.params.folderId}`);
-// 		if (req.user) {
-// 			const folders = await queryController.getFolder(
-// 				req.user.id,
-// 				req.params.folderId
-// 			);
-// 			console.log(folders);
-// 			res.render('index', {
-// 				user: req.user,
-// 				folders: folders,
-// 			});
-// 		}
-// 	} catch (error) {
-// 		console.error(error);
-// 		next(error);
-// 	}
-// };
+export const postDeleteFolder = async (req, res, next) => {
+	try {
+		console.log(req.body.userId);
+		console.log(req.body.folderId);
+
+		const folder = await queryController.requestFolder(req.body.folderId);
+		if (folder.ownerId === req.body.userId) {
+			// something
+		} else {
+			// something
+		}
+	} catch (error) {
+		console.error(error);
+		next(error);
+	}
+};

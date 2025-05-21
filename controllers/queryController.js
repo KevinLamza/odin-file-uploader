@@ -4,13 +4,23 @@ const prisma = new PrismaClient();
 
 export const insertUser = async (username, password) => {
 	await prisma.users.create({
-		data: { name: username, password: password },
+		data: {
+			name: username,
+			password: password,
+			folders: {
+				create: [{ title: 'My Drive', isRoot: true, parentId: null }],
+			},
+		},
 	});
 };
 
 export const addFolder = async (title, ownerId, parentId) => {
 	await prisma.folders.create({
-		data: { title: title, ownerId: ownerId, parentId: parentId },
+		data: {
+			title: title,
+			ownerId: ownerId,
+			parentId: parentId,
+		},
 	});
 };
 

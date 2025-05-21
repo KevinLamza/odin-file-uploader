@@ -16,5 +16,7 @@
 			<input type="hidden" id="parentId" name="parentId" value=<%= requestedFolders.parent[0].id %>>
 			<button type="submit">Save</button>
 		</form>
+		<% const returnURL = '/folder/' + requestedFolders.parent[0].id %>
+		<a href=<%=returnURL %>>Return</a>
 	</body>
 </html>

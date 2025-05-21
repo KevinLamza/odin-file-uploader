@@ -59,7 +59,8 @@
         <span><%= child.createdAt %></span>
         <br />
         <% if (editMode === "true") { %>
-          <button>Edit</button>
+          <% let renameURL = '/renameFolder/' + child.id %>
+          <a href=<%= renameURL %>>Edit</a>
           <form action="/delete-folder" method="POST">
             <input type="hidden" id="userId" name="userId" value=<%= user.id %>>
             <input type="hidden" id="folderId" name="folderId" value=<%= child.id %>>

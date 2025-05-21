@@ -6,14 +6,14 @@
 	</head>
 	<body>
 		<h1>Rename the folder</h1>
-		<p>Current name: <%= requestedFolder.title %></p>
+		<p>Current name: <%= requestedFolders.folder[0].title %></p>
 		<%- include("partials/errors.ejs") %>
 		<form action="/rename-folder" method="POST">
 			<label for="title">New name</label>
 			<input id="title" name="title" placeholder="New Name" type="text" />
 			<input type="hidden" id="userId" name="userId" value=<%= user.id %>>
-			<input type="hidden" id="folderId" name="folderId" value=<%= requestedFolder.id %>>
-			<input type="hidden" id="parentId" name="parentId" value=<%= requestedFolderParent.id %>>
+			<input type="hidden" id="folderId" name="folderId" value=<%= requestedFolders.folder[0].id %>>
+			<input type="hidden" id="parentId" name="parentId" value=<%= requestedFolders.parent[0].id %>>
 			<button type="submit">Save</button>
 		</form>
 	</body>

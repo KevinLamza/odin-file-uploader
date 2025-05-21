@@ -131,8 +131,6 @@ export const postDeleteFolder = async (req, res, next) => {
 	try {
 		// parentFolder needs to be saved for redirect before the folder is deleted
 		// otherwise parentFolder will be unaccessible and no redirect possible
-		// console.log(req.body.userId);
-		// console.log(req.body.folderId);
 		const parentFolder = await queryController.requestFolderParent(
 			req.body.userId,
 			req.body.folderId
@@ -169,22 +167,20 @@ const recursiveFolderDeletion = async (ownerId, folderId) => {
 export const postRenameFolder = async (req, res, next) => {
 	const errors = validationResult(req);
 	if (!errors.isEmpty()) {
-		const requestedFolder = await queryController.requestFolder(
-			parseInt(req.body.folderId)
-		);
-		const requestedFolderParent = await queryController.requestFolderParent(
-			parseInt(req.body.folderId)
+		const requestedFolders = await requestFolders(
+			req.body.userId,
+			req.body.folderId
 		);
 		return res.status(400).render('rename-folder-form', {
 			errors: errors.array(),
-			requestedFolder: requestedFolder,
-			requestedFolderParent: requestedFolderParent,
+			requestedFolders: requestedFolders,
 			user: req.body.userId,
 		});
 	}
 	try {
 		await queryController.renameFolder(
-			parseInt(req.body.folderId),
+			req.body.userId,
+			req.body.folderId,
 			req.body.title
 		);
 		if (req.body.parentId === '') {
@@ -200,22 +196,14 @@ export const postRenameFolder = async (req, res, next) => {
 
 export const getRenameFolderPage = async (req, res, next) => {
 	try {
-		const requestedFolder = await queryController.requestFolder(
-			parseInt(req.params.folderId)
+		const requestedFolders = await requestFolders(
+			req.user.id,
+			req.params.folderId
 		);
-		const requestedFolderParent = await queryController.requestFolderParent(
-			parseInt(req.params.folderId)
-		);
-		if (req.params && req.user.id != requestedFolder.ownerId) {
-			throw new Error('no access');
-		} else {
-			res.render('rename-folder-form', {
-				user: req.user,
-				requestedFolder: requestedFolder,
-				requestedFolderParent: requestedFolderParent,
-				access: false, // hier nochmal reinschauen
-			});
-		}
+		res.render('rename-folder-form', {
+			user: req.user,
+			requestedFolders: requestedFolders,
+		});
 	} catch (error) {
 		console.error(error);
 		next(error);

@@ -87,9 +87,9 @@ export const postCreateUser = async (req, res, next) => {
 		});
 	}
 	try {
-		// const hashedPassword = await bcrypt.hash(req.body.password, 10);
-		// await queryController.insertUser(req.body.username, hashedPassword);
-		// res.redirect('/');
+		const hashedPassword = await bcrypt.hash(req.body.password, 10);
+		await queryController.insertUser(req.body.username, hashedPassword);
+		res.redirect('/');
 	} catch (error) {
 		console.error(error);
 		next(error);

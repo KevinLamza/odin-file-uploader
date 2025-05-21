@@ -103,7 +103,7 @@ export const requestFolderChildren = async (ownerId, id) => {
 export const requestFolderParent = async (ownerId, parentId) => {
 	// const folder = await requestFolder(id);
 	if (parentId === null) {
-		return { id: null, ownerId: null, title: null };
+		return [{ id: null, ownerId: null, title: null }];
 	}
 	return await requestFolder(ownerId, parentId);
 };

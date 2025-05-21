@@ -59,6 +59,7 @@ export const getFolderPage = async (req, res, next) => {
 		// });
 		///////////////////
 		console.log(requestedFolders);
+		// console.log(requestedFolders.folder[0].id);
 		res.render('folders', {
 			user: req.user,
 			requestedFolders: requestedFolders,
@@ -80,7 +81,7 @@ export const requestFolders = async (userId, folderId, isRoot = false) => {
 		);
 		folders.parent = await queryController.requestFolderParent(
 			userId,
-			folders.folder[0].id
+			folders.folder[0].parentId
 		);
 	} else {
 		folders.folder = await queryController.requestFolder(userId, folderId);

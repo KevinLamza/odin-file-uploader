@@ -12,8 +12,68 @@
         <%= user.id %>
       </h1>
       <a href="/log-out">LOG OUT</a>
+      <%
+        let returnURL;
+        let editURL;
+        let noEditURL;
 
-      
+        if (requestedFolders.parent[0].id === null) {
+          returnURL = "/folder/";
+        } else {
+          returnURL = "/folder/" + requestedFolders.parent[0].id;
+        }
+        console.log('and again');
+        console.log(requestedFolders.folder[0].id);
+        if (requestedFolders.folder[0].id === null) {
+          editURL = "/folder/" + "?edit=true";
+          noEditURL = "/folder/";
+        } else {
+          editURL = "/folder/" + requestedFolders.folder[0].id + "?edit=true";
+          noEditURL = "/folder/" + requestedFolders.folder[0].id;
+        }
+      %>
+      <h2>
+        <a href=<%= returnURL %>>Go back</a>
+      </h2>
+      <% if (editMode === "true") { %>
+        <h2>
+          <a href=<%= noEditURL %>>Leave edit mode</a>
+        </h2>
+      <% } else { %>
+        <h2>
+          <a href=<%= editURL %>>Edit folders</a>
+        </h2>
+      <% } %>
+      <%- include("partials/errors.ejs") %>
+      <form action="/add-folder" method="POST">
+        <label for="title">Title</label>
+        <input id="title" name="title" placeholder="title" type="text" />
+        <input type="hidden" id="userId" name="userId" value=<%= user.id %>>
+        <input type="hidden" id="parentId" name="parentId" value=<%= requestedFolders.parent[0].id %>>
+        <input type="hidden" id="folderId" name="folderId" value=<%= requestedFolders.folder[0].id %>>
+        <button type="submit">Add folder</button>
+      </form>
+      <% requestedFolders.children.forEach((child) => { %>
+        <% const childURL = "/folder/" + child.id %>
+        <span>
+          <a href=<%= childURL %>><%= child.title %></a>
+        </span>
+        <br />
+        <span><%= child.createdAt %></span>
+        <br />
+        <% if (editMode === "true") { %>
+          <button>Edit</button>
+          <form action="/delete-folder" method="POST">
+            <input type="hidden" id="userId" name="userId" value=<%= user.id %>>
+            <input type="hidden" id="folderId" name="folderId" value=<%= child.id %>>
+            <!-- <input type="hidden" id="currentId" name="currentId" value=<%= requestedFolder.id %>> -->
+            <button type="submit">Delete</button>
+          </form>
+          <br />
+        <% } %>
+        <span>----------</span>
+        <br />
+        <% }); %>
     <% } %>
   </body>
 </html>

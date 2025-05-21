@@ -68,17 +68,28 @@ export const getCreateUser = (req, res) => {
 };
 
 export const postCreateUser = async (req, res, next) => {
-	const errors = validationResult(req);
-	if (!errors.isEmpty()) {
+	let errors = validationResult(req);
+	const checkUser = await queryController.findUser(req.body.username);
+	errors = errors.array();
+	if (checkUser && checkUser.name === req.body.username) {
+		errors.push({
+			type: 'field',
+			value: req.body.username,
+			msg: 'A user with this name exists already',
+			path: 'username',
+			location: 'body',
+		});
+	}
+	if (errors.length !== 0) {
 		return res.status(400).render('sign-up-form', {
 			title: 'sign-up',
-			errors: errors.array(),
+			errors: errors,
 		});
 	}
 	try {
-		const hashedPassword = await bcrypt.hash(req.body.password, 10);
-		await queryController.insertUser(req.body.username, hashedPassword);
-		res.redirect('/');
+		// const hashedPassword = await bcrypt.hash(req.body.password, 10);
+		// await queryController.insertUser(req.body.username, hashedPassword);
+		// res.redirect('/');
 	} catch (error) {
 		console.error(error);
 		next(error);

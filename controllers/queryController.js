@@ -14,6 +14,14 @@ export const insertUser = async (username, password) => {
 	});
 };
 
+export const findUser = async (username) => {
+	return await prisma.users.findUnique({
+		where: {
+			name: username,
+		},
+	});
+};
+
 export const addFolder = async (title, ownerId, parentId) => {
 	await prisma.folders.create({
 		data: {

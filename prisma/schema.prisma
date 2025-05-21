@@ -23,6 +23,7 @@ model Session {
 
 model folders {
     id        Int       @id @default(autoincrement())
+    isRoot    Boolean   @default(false)
     owner     users     @relation(fields: [ownerId], references: [id])
     ownerId   String
     title     String    @db.VarChar(255)

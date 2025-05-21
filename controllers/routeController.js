@@ -131,14 +131,17 @@ export const postDeleteFolder = async (req, res, next) => {
 	try {
 		// parentFolder needs to be saved for redirect before the folder is deleted
 		// otherwise parentFolder will be unaccessible and no redirect possible
+		// console.log(req.body.userId);
+		// console.log(req.body.folderId);
 		const parentFolder = await queryController.requestFolderParent(
+			req.body.userId,
 			req.body.folderId
 		);
 		await recursiveFolderDeletion(req.body.userId, req.body.folderId);
 		if (parentFolder[0].id === null) {
 			res.redirect('/folder');
 		} else {
-			res.redirect('/folder/' + parentFolder.id);
+			res.redirect('/folder/' + parentFolder[0].id);
 		}
 	} catch (error) {
 		console.error(error);

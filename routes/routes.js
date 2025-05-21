@@ -10,7 +10,27 @@ const upload = multer({ dest: 'uploads/' });
 
 export const routes = Router();
 
-routes.get('/', routeController.getIndexPage);
+routes.get(
+	'/',
+	routeController.getIndexPage,
+	authentificationController.isAuthenticated,
+	routeController.getFolderPage
+);
+routes.get(
+	'/folder/:folderId',
+	authentificationController.isAuthenticated,
+	routeController.getFolderPage
+);
+
+routes.post('/add-folder', validateFolderName, routeController.postAddFolder);
+routes.post('/delete-folder', routeController.postDeleteFolder);
+routes.get('/renameFolder/:folderId', routeController.getRenameFolderPage);
+routes.post(
+	'/rename-folder',
+	validateFolderName,
+	routeController.postRenameFolder
+);
+
 routes.get('/sign-up-form', routeController.getCreateUser);
 routes.post('/sign-up-form', validateUser, routeController.postCreateUser);
 routes.post(
@@ -19,6 +39,7 @@ routes.post(
 	routeController.getIndexPage
 );
 routes.get('/log-out', authentificationController.logOut);
+
 routes.get(
 	'/upload-form',
 	authentificationController.isAuthenticated,
@@ -29,12 +50,9 @@ routes.post(
 	upload.single('file'),
 	routeController.postUploadForm
 );
-routes.post('/add-folder', validateFolderName, routeController.postAddFolder);
-routes.get('/folder/:folderId', routeController.getIndexPage);
-routes.post('/delete-folder', routeController.postDeleteFolder);
-routes.get('/renameFolder/:folderId', routeController.getRenameFolderPage);
-routes.post(
-	'/rename-folder',
-	validateFolderName,
-	routeController.postRenameFolder
+
+routes.get(
+	'/{*catchall}',
+	authentificationController.isAuthenticated,
+	routeController.getFolderPage
 );

@@ -5,48 +5,56 @@ import * as queryController from '../controllers/queryController.js';
 export const getIndexPage = async (req, res, next) => {
 	try {
 		if (req.user) {
-			let requestedFolder;
-			let requestedFolderChildren;
-			let requestedFolderParent;
-
-			async function sendToRootFolder(userId) {
-				requestedFolderChildren =
-					await queryController.requestFolderChildren(userId, null);
-				requestedFolder = { id: null, title: null };
-				requestedFolderParent = { id: null, title: null };
-			}
-
-			if (req.params.folderId === undefined) {
-				await sendToRootFolder(req.user.id);
-			} else {
-				requestedFolderChildren =
-					await queryController.requestFolderChildren(
-						req.user.id,
-						parseInt(req.params.folderId)
-					);
-				requestedFolder = await queryController.requestFolder(
-					parseInt(req.params.folderId)
-				);
-				requestedFolderParent =
-					await queryController.requestFolderParent(
-						parseInt(req.params.folderId)
-					);
-			}
-			// this line makes sure that user can't access folder
-			// that are not theirs by modifying the url
-			if (req.params && req.user.id != requestedFolder.ownerId) {
-				await sendToRootFolder(req.user.id);
-			}
-			res.render('index', {
-				user: req.user,
-				requestedFolder: requestedFolder,
-				requestedFolderChildren: requestedFolderChildren,
-				requestedFolderParent: requestedFolderParent,
-				editMode: req.query.edit,
-			});
+			next();
+			// let requestedFolder;
+			// let requestedFolderChildren;
+			// let requestedFolderParent;
+			// async function sendToRootFolder(userId) {
+			// 	requestedFolderChildren =
+			// 		await queryController.requestFolderChildren(userId, null);
+			// 	requestedFolder = { id: null, title: null };
+			// 	requestedFolderParent = { id: null, title: null };
+			// }
+			// if (req.params.folderId === undefined) {
+			// 	await sendToRootFolder(req.user.id);
+			// } else {
+			// 	requestedFolderChildren =
+			// 		await queryController.requestFolderChildren(
+			// 			req.user.id,
+			// 			parseInt(req.params.folderId)
+			// 		);
+			// 	requestedFolder = await queryController.requestFolder(
+			// 		parseInt(req.params.folderId)
+			// 	);
+			// 	requestedFolderParent =
+			// 		await queryController.requestFolderParent(
+			// 			parseInt(req.params.folderId)
+			// 		);
+			// }
+			// // this line makes sure that user can't access folder
+			// // that are not theirs by modifying the url
+			// if (req.params && req.user.id != requestedFolder.ownerId) {
+			// 	await sendToRootFolder(req.user.id);
+			// }
+			// res.render('index', {
+			// 	user: req.user,
+			// 	requestedFolder: requestedFolder,
+			// 	requestedFolderChildren: requestedFolderChildren,
+			// 	requestedFolderParent: requestedFolderParent,
+			// 	editMode: req.query.edit,
+			// });
 		} else {
 			res.render('index');
 		}
+	} catch (error) {
+		console.error(error);
+		next(error);
+	}
+};
+
+export const getFolderPage = (req, res, next) => {
+	try {
+		res.render('folders', { user: req.user });
 	} catch (error) {
 		console.error(error);
 		next(error);

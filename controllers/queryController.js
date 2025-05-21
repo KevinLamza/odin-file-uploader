@@ -19,7 +19,7 @@ export const addFolder = async (title, ownerId, parentId) => {
 		data: {
 			title: title,
 			ownerId: ownerId,
-			parentId: parentId,
+			parentId: parseInt(parentId),
 		},
 	});
 };
@@ -44,6 +44,8 @@ export const renameFolder = async (id, title) => {
 };
 
 export const requestFolder = async (ownerId, id) => {
+	console.log(id);
+	// console.log(typeof id);
 	return await prisma.folders.findMany({
 		where: {
 			AND: [
@@ -100,10 +102,12 @@ export const requestFolderChildren = async (ownerId, id) => {
 	});
 };
 
-export const requestFolderParent = async (ownerId, parentId) => {
-	// const folder = await requestFolder(id);
-	if (parentId === null) {
+export const requestFolderParent = async (ownerId, id) => {
+	console.log(id);
+	console.log('we good');
+	const folder = await requestFolder(ownerId, id);
+	if (folder[0].parentId === null) {
 		return [{ id: null, ownerId: null, title: null }];
 	}
-	return await requestFolder(ownerId, parentId);
+	return await requestFolder(ownerId, folder[0].parentId);
 };

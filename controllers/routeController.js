@@ -42,6 +42,8 @@ export const getFolderPage = async (req, res, next) => {
 			// requestedFolderParent = await queryController.requestFolderParent(
 			// 	parseInt(req.params.folderId)
 			// );
+			// console.log('look');
+			console.log(req.params.folderId);
 			requestedFolders = await requestFolders(
 				req.user.id,
 				req.params.folderId
@@ -58,7 +60,7 @@ export const getFolderPage = async (req, res, next) => {
 		// 	editMode: req.query.edit,
 		// });
 		///////////////////
-		console.log(requestedFolders);
+		// console.log(requestedFolders);
 		// console.log(requestedFolders.folder[0].id);
 		res.render('folders', {
 			user: req.user,
@@ -89,6 +91,7 @@ export const requestFolders = async (userId, folderId, isRoot = false) => {
 			userId,
 			folderId
 		);
+		console.log(folderId);
 		folders.parent = await queryController.requestFolderParent(
 			userId,
 			folderId
@@ -140,16 +143,17 @@ export const postUploadForm = async (req, res, next) => {
 export const postAddFolder = async (req, res, next) => {
 	const errors = validationResult(req);
 	if (!errors.isEmpty()) {
-		const requestedFolderChildren =
-			await queryController.requestFolderChildren(req.body.userId, null);
-		const requestedFolder = { id: null, title: null };
-		const requestedFolderParent = { id: null, title: null };
-		return res.status(400).render('index', {
+		const requestedFolders = await requestFolders(req.user.id, 0, true);
+		// const requestedFolderChildren =
+		// 	await queryController.requestFolderChildren(req.body.userId, null);
+		// const requestedFolder = { id: null, title: null };
+		// const requestedFolderParent = { id: null, title: null };
+		return res.status(400).render('folders', {
 			errors: errors.array(),
 			user: req.body.userId,
-			requestedFolder: requestedFolder,
-			requestedFolderChildren: requestedFolderChildren,
-			requestedFolderParent: requestedFolderParent,
+			requestedFolders: requestedFolders,
+			// requestedFolderChildren: requestedFolderChildren,
+			// requestedFolderParent: requestedFolderParent,
 			editMode: false,
 		});
 	}
@@ -157,16 +161,16 @@ export const postAddFolder = async (req, res, next) => {
 		await queryController.addFolder(
 			req.body.title,
 			req.body.userId,
-			parseInt(req.body.parentId)
+			req.body.folderId
 		);
 
 		// the form is submitting the parentId, but when it's null ...
 		// ... html is submitting an emptry string instead of null
-		if (req.body.parentId === '') {
-			res.redirect('/');
-		} else {
-			res.redirect('/folder/' + req.body.parentId);
-		}
+		// if (req.body.folderId === '') {
+		// 	res.redirect('/folder/');
+		// } else {
+		res.redirect('/folder/' + req.body.folderId);
+		// }
 	} catch (error) {
 		console.error(error);
 		next(error);

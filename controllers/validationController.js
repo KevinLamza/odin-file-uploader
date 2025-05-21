@@ -17,8 +17,9 @@ export const validateUser = [
 export const validateFolderName = [
 	body('title')
 		.trim()
-		.isAlphanumeric()
-		.withMessage('Can only contain letters and numbers!')
+		// .isAlphanumeric()
+		.matches(/^[a-z0-9 ]+$/i)
+		.withMessage('Can only contain letters, numbers and spaces!')
 		.isLength({ min: 1, max: 20 })
 		.withMessage('Must be between 1 and 20 characters'),
 ];

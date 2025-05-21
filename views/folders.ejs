@@ -22,8 +22,6 @@
         } else {
           returnURL = "/folder/" + requestedFolders.parent[0].id;
         }
-        console.log('and again');
-        console.log(requestedFolders.folder[0].id);
         if (requestedFolders.folder[0].id === null) {
           editURL = "/folder/" + "?edit=true";
           noEditURL = "/folder/";
@@ -49,7 +47,6 @@
         <label for="title">Title</label>
         <input id="title" name="title" placeholder="title" type="text" />
         <input type="hidden" id="userId" name="userId" value=<%= user.id %>>
-        <input type="hidden" id="parentId" name="parentId" value=<%= requestedFolders.parent[0].id %>>
         <input type="hidden" id="folderId" name="folderId" value=<%= requestedFolders.folder[0].id %>>
         <button type="submit">Add folder</button>
       </form>

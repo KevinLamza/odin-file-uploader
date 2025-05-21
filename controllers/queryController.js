@@ -24,10 +24,26 @@ export const addFolder = async (title, ownerId, parentId) => {
 	});
 };
 
-export const deleteFolder = async (id) => {
-	await prisma.folders.delete({
+export const deleteFolder = async (ownerId, id) => {
+	await prisma.folders.deleteMany({
 		where: {
-			id: id,
+			AND: [
+				{
+					id: {
+						equals: parseInt(id),
+					},
+				},
+				{
+					ownerId: {
+						equals: ownerId,
+					},
+				},
+				{
+					isRoot: {
+						equals: false,
+					},
+				},
+			],
 		},
 	});
 };
@@ -103,8 +119,6 @@ export const requestFolderChildren = async (ownerId, id) => {
 };
 
 export const requestFolderParent = async (ownerId, id) => {
-	console.log(id);
-	console.log('we good');
 	const folder = await requestFolder(ownerId, id);
 	if (folder[0].parentId === null) {
 		return [{ id: null, ownerId: null, title: null }];

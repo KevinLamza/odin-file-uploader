@@ -17,51 +17,15 @@ export const getIndexPage = async (req, res, next) => {
 
 export const getFolderPage = async (req, res, next) => {
 	try {
-		///////////
-		// let requestedFolder;
-		// let requestedFolderChildren;
-		// let requestedFolderParent;
-		// async function sendToRootFolder(userId) {
-		// 	requestedFolderChildren =
-		// 		await queryController.requestFolderChildren(userId, null);
-		// 	requestedFolder = { id: null, title: null };
-		// 	requestedFolderParent = { id: null, title: null };
-		// }
 		let requestedFolders;
 		if (req.params.folderId === undefined) {
 			requestedFolders = await requestFolders(req.user.id, 0, true);
 		} else {
-			// requestedFolderChildren =
-			// 	await queryController.requestFolderChildren(
-			// 		req.user.id,
-			// 		parseInt(req.params.folderId)
-			// 	);
-			// requestedFolder = await queryController.requestFolder(
-			// 	parseInt(req.params.folderId)
-			// );
-			// requestedFolderParent = await queryController.requestFolderParent(
-			// 	parseInt(req.params.folderId)
-			// );
-			// console.log('look');
-			console.log(req.params.folderId);
 			requestedFolders = await requestFolders(
 				req.user.id,
 				req.params.folderId
 			);
 		}
-		// this line makes sure that user can't access folder
-		// that are not theirs by modifying the url
-		// if (req.params && req.user.id != requestedFolder.ownerId) {
-		// 	await sendToRootFolder(req.user.id);
-		// }
-		// res.render('index', {
-		// 	user: req.user,
-		// 	requestedFolders: requestedFolders,
-		// 	editMode: req.query.edit,
-		// });
-		///////////////////
-		// console.log(requestedFolders);
-		// console.log(requestedFolders.folder[0].id);
 		res.render('folders', {
 			user: req.user,
 			requestedFolders: requestedFolders,
@@ -83,7 +47,7 @@ export const requestFolders = async (userId, folderId, isRoot = false) => {
 		);
 		folders.parent = await queryController.requestFolderParent(
 			userId,
-			folders.folder[0].parentId
+			folders.folder[0].id
 		);
 	} else {
 		folders.folder = await queryController.requestFolder(userId, folderId);
@@ -91,7 +55,6 @@ export const requestFolders = async (userId, folderId, isRoot = false) => {
 			userId,
 			folderId
 		);
-		console.log(folderId);
 		folders.parent = await queryController.requestFolderParent(
 			userId,
 			folderId
@@ -144,16 +107,10 @@ export const postAddFolder = async (req, res, next) => {
 	const errors = validationResult(req);
 	if (!errors.isEmpty()) {
 		const requestedFolders = await requestFolders(req.user.id, 0, true);
-		// const requestedFolderChildren =
-		// 	await queryController.requestFolderChildren(req.body.userId, null);
-		// const requestedFolder = { id: null, title: null };
-		// const requestedFolderParent = { id: null, title: null };
 		return res.status(400).render('folders', {
 			errors: errors.array(),
 			user: req.body.userId,
 			requestedFolders: requestedFolders,
-			// requestedFolderChildren: requestedFolderChildren,
-			// requestedFolderParent: requestedFolderParent,
 			editMode: false,
 		});
 	}
@@ -163,14 +120,7 @@ export const postAddFolder = async (req, res, next) => {
 			req.body.userId,
 			req.body.folderId
 		);
-
-		// the form is submitting the parentId, but when it's null ...
-		// ... html is submitting an emptry string instead of null
-		// if (req.body.folderId === '') {
-		// 	res.redirect('/folder/');
-		// } else {
 		res.redirect('/folder/' + req.body.folderId);
-		// }
 	} catch (error) {
 		console.error(error);
 		next(error);
@@ -179,23 +129,16 @@ export const postAddFolder = async (req, res, next) => {
 
 export const postDeleteFolder = async (req, res, next) => {
 	try {
-		const folder = await queryController.requestFolder(
-			parseInt(req.body.folderId)
+		// parentFolder needs to be saved for redirect before the folder is deleted
+		// otherwise parentFolder will be unaccessible and no redirect possible
+		const parentFolder = await queryController.requestFolderParent(
+			req.body.folderId
 		);
-		if (folder.ownerId === req.body.userId) {
-			// parentFolder needs to be saved for redirect before the folder is deleted
-			// otherwise parentFolder will be unaccessible and no redirect possible
-			const parentFolder = await queryController.requestFolderParent(
-				parseInt(req.body.folderId)
-			);
-			await recursiveFolderDeletion(req.body.userId, req.body.folderId);
-			if (parentFolder.id === null) {
-				res.redirect('/');
-			} else {
-				res.redirect('/folder/' + parentFolder.id);
-			}
+		await recursiveFolderDeletion(req.body.userId, req.body.folderId);
+		if (parentFolder[0].id === null) {
+			res.redirect('/folder');
 		} else {
-			res.redirect('/');
+			res.redirect('/folder/' + parentFolder.id);
 		}
 	} catch (error) {
 		console.error(error);
@@ -214,7 +157,7 @@ const recursiveFolderDeletion = async (ownerId, folderId) => {
 				recursiveFolderDeletion(ownerId, child.id)
 			);
 		} else return;
-		await queryController.deleteFolder(parseInt(folderId));
+		await queryController.deleteFolder(ownerId, folderId);
 	} catch (error) {
 		console.error(error);
 	}

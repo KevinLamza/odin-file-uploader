@@ -127,6 +127,9 @@ export const requestFolderChildren = async (ownerId, id) => {
 				},
 			],
 		},
+		orderBy: {
+			createdAt: 'desc',
+		},
 	});
 };
 

@@ -152,6 +152,7 @@ export const postUploadForm = async (req, res, next) => {
 			req.user.id,
 			req.body.folderId
 		);
+		console.log('path ' + req.file.path);
 		const redirectPath = '/folder/' + req.body.folderId;
 		res.redirect(redirectPath);
 	} catch (error) {

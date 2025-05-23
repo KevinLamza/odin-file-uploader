@@ -9,6 +9,7 @@
       <h1><%= requestedFile[0].title %></h1>
       <p><%= requestedFile[0].size / 1024 %> kB </p>
       <p><%= requestedFile[0].createdAt %></p>
+      <a href="/path/to/file.pdf" download="CustomFileName.pdf">Download PDF</a></br>
       <a href="javascript:history.back()">Go Back</a>
     <% } %>
   </body>

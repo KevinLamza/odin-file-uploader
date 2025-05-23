@@ -44,4 +44,5 @@ model files {
     parentId  Int
     parent    folders  @relation(fields: [parentId], references: [id])
     createdAt DateTime @default(now())
+    filename  String   @db.VarChar(255)
 }

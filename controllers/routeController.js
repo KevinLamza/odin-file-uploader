@@ -107,7 +107,16 @@ export const getUploadFormPage = async (req, res, next) => {
 
 export const postUploadForm = async (req, res, next) => {
 	try {
-		res.redirect('/');
+		console.log(req.body);
+		console.log(req.file);
+		await queryController.saveFileData(
+			req.file.originalname,
+			req.file.size,
+			req.user.id,
+			req.body.folderId
+		);
+		const redirectPath = '/folder/' + req.body.folderId;
+		res.redirect(redirectPath);
 	} catch (error) {
 		console.error(error);
 		next(error);

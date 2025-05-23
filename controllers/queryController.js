@@ -147,3 +147,14 @@ export const requestFolderParent = async (ownerId, id) => {
 	}
 	return await requestFolder(ownerId, folder[0].parentId);
 };
+
+export const saveFileData = async (title, size, ownerId, parentId) => {
+	return await prisma.files.create({
+		data: {
+			title: title,
+			size: parseInt(size) / 1000,
+			ownerId: ownerId,
+			parentId: parseInt(parentId),
+		},
+	});
+};

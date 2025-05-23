@@ -31,4 +31,14 @@ model folders {
     parentId  Int?
     parent    folders?  @relation("FolderStructure", fields: [parentId], references: [id])
     children  folders[] @relation("FolderStructure")
+    files     files[]
+}
+
+model files {
+    id        String   @id @default(uuid())
+    name      String   @db.VarChar(255)
+    size      Float
+    parentId  Int
+    parent    folders  @relation(fields: [parentId], references: [id])
+    createdAt DateTime @default(now())
 }

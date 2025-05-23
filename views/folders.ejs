@@ -56,6 +56,7 @@
       <input type="hidden" id="folderId" name="folderId" value=<%= requestedFolders.folder[0].id %>>
 			<button type="submit">Upload</button>
 		</form>
+    <h2>Folders</h2>
       <% requestedFolders.children.forEach((child) => { %>
         <% const childURL = "/folder/" + child.id %>
         <span>
@@ -74,6 +75,18 @@
           </form>
           <br />
         <% } %>
+        <span>----------</span>
+        <br />
+        <% }); %>
+      <h2>Folders</h2>
+        <% requestedFiles.forEach((child) => { %>
+        <% const childURL = "/file/" + child.id %>
+        <span>
+          <a href=<%= childURL %>><%= child.title %></a>
+        </span>
+        <br />
+        <span><%= child.createdAt %></span>
+        <br />
         <span>----------</span>
         <br />
         <% }); %>

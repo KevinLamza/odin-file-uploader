@@ -18,6 +18,7 @@ export const getIndexPage = async (req, res, next) => {
 export const getFolderPage = async (req, res, next) => {
 	try {
 		let requestedFolders;
+		let requestedFiles;
 		if (req.params.folderId === undefined) {
 			requestedFolders = await requestFolders(req.user.id, 0, true);
 		} else {
@@ -26,9 +27,15 @@ export const getFolderPage = async (req, res, next) => {
 				req.params.folderId
 			);
 		}
+		requestedFiles = await queryController.requestFiles(
+			req.user.id,
+			requestedFolders.folder[0].id
+		);
+		console.log(requestedFiles);
 		res.render('folders', {
 			user: req.user,
 			requestedFolders: requestedFolders,
+			requestedFiles: requestedFiles,
 			editMode: req.query.edit,
 		});
 	} catch (error) {
@@ -107,8 +114,6 @@ export const getUploadFormPage = async (req, res, next) => {
 
 export const postUploadForm = async (req, res, next) => {
 	try {
-		console.log(req.body);
-		console.log(req.file);
 		await queryController.saveFileData(
 			req.file.originalname,
 			req.file.size,

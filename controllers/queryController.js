@@ -80,7 +80,7 @@ export const renameFolder = async (ownerId, id, title) => {
 
 export const requestFolder = async (ownerId, id) => {
 	id = parseInt(id);
-	const result = await prisma.folders.findMany({
+	return await prisma.folders.findMany({
 		where: {
 			AND: [
 				{
@@ -96,7 +96,6 @@ export const requestFolder = async (ownerId, id) => {
 			],
 		},
 	});
-	return result;
 };
 
 export const requestRootFolder = async (ownerId) => {
@@ -152,9 +151,28 @@ export const saveFileData = async (title, size, ownerId, parentId) => {
 	return await prisma.files.create({
 		data: {
 			title: title,
-			size: parseInt(size) / 1000,
+			size: parseInt(size),
 			ownerId: ownerId,
 			parentId: parseInt(parentId),
+		},
+	});
+};
+
+export const requestFiles = async (ownerId, parentId) => {
+	return await prisma.files.findMany({
+		where: {
+			AND: [
+				{
+					ownerId: {
+						equals: ownerId,
+					},
+				},
+				{
+					parentId: {
+						equals: parseInt(parentId),
+					},
+				},
+			],
 		},
 	});
 };

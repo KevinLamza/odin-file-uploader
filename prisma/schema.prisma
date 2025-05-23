@@ -12,6 +12,7 @@ model users {
     name     String    @unique @db.VarChar(255)
     password String    @db.VarChar(255)
     folders  folders[]
+    files    files[]
 }
 
 model Session {
@@ -37,6 +38,8 @@ model folders {
 model files {
     id        String   @id @default(uuid())
     name      String   @db.VarChar(255)
+    owner     users    @relation(fields: [ownerId], references: [id])
+    ownerId   String
     size      Float
     parentId  Int
     parent    folders  @relation(fields: [parentId], references: [id])

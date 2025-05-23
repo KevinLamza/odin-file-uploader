@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Log In</title>
+  </head>
+  <body>
+    <% if (locals.user) { %>
+      <h1><%= requestedFile[0].title %></h1>
+      <p><%= requestedFile[0].size / 1024 %> kB </p>
+      <p><%= requestedFile[0].createdAt %></p>
+      <a href="javascript:history.back()">Go Back</a>
+    <% } %>
+  </body>
+</html>

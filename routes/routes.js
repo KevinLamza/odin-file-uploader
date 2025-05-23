@@ -21,6 +21,11 @@ routes.get(
 	authentificationController.isAuthenticated,
 	routeController.getFolderPage
 );
+routes.get(
+	'/file/:fileId',
+	authentificationController.isAuthenticated,
+	routeController.getFilePage
+);
 
 routes.post('/add-folder', validateFolderName, routeController.postAddFolder);
 routes.post('/delete-folder', routeController.postDeleteFolder);

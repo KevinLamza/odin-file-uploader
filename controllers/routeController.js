@@ -44,6 +44,38 @@ export const getFolderPage = async (req, res, next) => {
 	}
 };
 
+export const getFilePage = async (req, res, next) => {
+	try {
+		// let requestedFolders;
+		// let requestedFiles;
+		// if (req.params.folderId === undefined) {
+		// 	requestedFolders = await requestFolders(req.user.id, 0, true);
+		// } else {
+		// 	requestedFolders = await requestFolders(
+		// 		req.user.id,
+		// 		req.params.folderId
+		// 	);
+		// }
+		// requestedFiles = await queryController.requestFiles(
+		// 	req.user.id,
+		// 	requestedFolders.folder[0].id
+		// );
+		console.log('hallo');
+		const requestedFile = await queryController.requestSingleFile(
+			req.user.id,
+			req.params.fileId
+		);
+		console.log(requestedFile);
+		res.render('files', {
+			user: req.user,
+			requestedFile: requestedFile,
+		});
+	} catch (error) {
+		console.error(error);
+		next(error);
+	}
+};
+
 export const requestFolders = async (userId, folderId, isRoot = false) => {
 	const folders = {};
 	if (isRoot) {

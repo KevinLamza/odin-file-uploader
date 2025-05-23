@@ -176,3 +176,22 @@ export const requestFiles = async (ownerId, parentId) => {
 		},
 	});
 };
+
+export const requestSingleFile = async (ownerId, fileId) => {
+	return await prisma.files.findMany({
+		where: {
+			AND: [
+				{
+					ownerId: {
+						equals: ownerId,
+					},
+				},
+				{
+					id: {
+						equals: fileId,
+					},
+				},
+			],
+		},
+	});
+};

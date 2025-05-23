@@ -96,7 +96,6 @@ export const requestFolder = async (ownerId, id) => {
 			],
 		},
 	});
-	console.log(result);
 	return result;
 };
 

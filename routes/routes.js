@@ -36,7 +36,7 @@ routes.post('/sign-up-form', validateUser, routeController.postCreateUser);
 routes.post(
 	'/log-in',
 	authentificationController.authenticateUser,
-	routeController.getIndexPage
+	routeController.getFolderPage
 );
 routes.get('/log-out', authentificationController.logOut);
 

@@ -202,3 +202,22 @@ export const requestSingleFile = async (ownerId, fileId) => {
 		},
 	});
 };
+
+export const deleteFile = async (ownerId, parentId) => {
+	await prisma.files.deleteMany({
+		where: {
+			AND: [
+				{
+					parentId: {
+						equals: parseInt(parentId),
+					},
+				},
+				{
+					ownerId: {
+						equals: ownerId,
+					},
+				},
+			],
+		},
+	});
+};

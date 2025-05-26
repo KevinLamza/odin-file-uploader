@@ -217,6 +217,7 @@ const recursiveFolderDeletion = async (ownerId, folderId) => {
 				recursiveFolderDeletion(ownerId, child.id)
 			);
 		} else return;
+		await queryController.deleteFile(ownerId, folderId);
 		await queryController.deleteFolder(ownerId, folderId);
 	} catch (error) {
 		console.error(error);

@@ -57,6 +57,12 @@ routes.post(
 );
 
 routes.get(
+	'/download/:fileId',
+	authentificationController.isAuthenticated,
+	routeController.getDownloadFile
+);
+
+routes.get(
 	'/{*catchall}',
 	authentificationController.isAuthenticated,
 	routeController.getFolderPage

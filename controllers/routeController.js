@@ -150,7 +150,8 @@ export const postUploadForm = async (req, res, next) => {
 			req.file.originalname,
 			req.file.size,
 			req.user.id,
-			req.body.folderId
+			req.body.folderId,
+			req.file.filename
 		);
 		console.log('path ' + req.file.path);
 		const redirectPath = '/folder/' + req.body.folderId;
@@ -262,6 +263,23 @@ export const getRenameFolderPage = async (req, res, next) => {
 			user: req.user,
 			requestedFolders: requestedFolders,
 		});
+	} catch (error) {
+		console.error(error);
+		next(error);
+	}
+};
+
+export const getDownloadFile = async (req, res, next) => {
+	try {
+		const requestedFile = await queryController.requestSingleFile(
+			req.user.id,
+			req.params.fileId
+		);
+		console.log('download');
+		res.download(
+			`uploads/${requestedFile[0].filename}`,
+			requestedFile[0].title
+		);
 	} catch (error) {
 		console.error(error);
 		next(error);

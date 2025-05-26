@@ -1,6 +1,9 @@
 # Notes
 *.md
+
+# My Dev Stuff
 schnippsel
+uploads/
 
 # Prisma
 generated/prisma/
